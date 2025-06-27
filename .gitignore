@@ -1,0 +1,8 @@
+# Node backend
+Node-api/node_modules/
+Node-api/.env
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+frontend/build/
