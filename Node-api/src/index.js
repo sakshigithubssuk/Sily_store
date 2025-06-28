@@ -1,45 +1,46 @@
-const express = require("express");
-const cors = require("cors");
-const { connectDb } = require("./src/config/db"); // ✅ Adjust path if needed
+const express = require("express")
+const { connectDb } = require("./config/db");
+const cors = require("cors")
+ const app = express()
+ app.use(express.json())
+ app.use(cors())//everyone can access frontend part
+ app.get("/",(req,res)=>{
+  return res.status(200).send({message:"Welcome to ecommerce api-node",status:true})
+ })
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+ const authRouters = require('./routes/auth.route.js');
+ const userRouters = require('./routes/user.route.js');
+ app.use("/auth",authRouters);
+ app.use("/api/users",userRouters);
 
-// Basic health route
-app.get("/", (req, res) => {
-  return res.status(200).send({ message: "Welcome to ecommerce api-node", status: true });
-});
+ const productRouter = require('./routes/product.routes.js');
+ app.use("/api/products",productRouter);
 
-// Routes
-const authRouters = require('./src/routes/auth.route.js');
-const userRouters = require('./src/routes/user.route.js');
-const productRouter = require('./src/routes/product.routes.js');
-const adminProductRouter = require('./src/routes/adminproduct.route.js');
-const cartRouter = require('./src/routes/cart.route.js');
-const cartItemRouter = require('./src/routes/cartItem.route.js');
-const orderRouter = require('./src/routes/order.routes.js');
-const adminOrderRouter = require('./src/routes/adminorder.route.js');
-const reviewRouter = require('./src/routes/review.routes.js');
-const ratingRouter = require('./src/routes/review.routes.js');
-const paymentRouter = require("./src/routes/payment.route.js");
+ const adminProductRouter = require('./routes/adminproduct.route.js');
+ app.use("/api/admin/products",adminProductRouter);
 
-// Use routes
-app.use("/auth", authRouters);
-app.use("/api/users", userRouters);
-app.use("/api/products", productRouter);
-app.use("/api/admin/products", adminProductRouter);
-app.use("/api/cart", cartRouter);
-app.use("/api/cart_items", cartItemRouter);
-app.use("/api/orders", orderRouter);
-app.use("/api/admin/orders", adminOrderRouter);
-app.use("/api/reviews", reviewRouter);
-app.use("/api/ratings", ratingRouter);
-app.use("/api/payments", paymentRouter);
+ const cartRouter = require('./routes/cart.route.js');
+ app.use("/api/cart",cartRouter);
 
-// Start the server
-const PORT = process.env.PORT || 5454;
-app.listen(PORT, async () => {
+ const cartItemRouter = require('./routes/cartItem.route.js');
+ app.use("/api/cart_items",cartItemRouter);
+
+ const orderRouter = require('./routes/order.routes.js');
+ app.use("/api/orders",orderRouter);
+
+ const adminOrderRouter = require('./routes/adminorder.route.js');
+ app.use('/api/admin/orders',adminOrderRouter);
+ 
+ const reviewRouter = require('./routes/review.routes.js');
+ app.use('/api/reviews',reviewRouter);
+
+ const ratingRouter = require('./routes/review.routes.js');
+ app.use('/api/ratings',ratingRouter);
+
+const paymentRouter = require("./routes/payment.route.js");
+app.use("/api/payments",paymentRouter);
+const PORT=5454;
+app.listen(PORT,async()=>{
   await connectDb();
-  console.log(`🚀 Ecommerce API listening on port: ${PORT}`);
-});
+  console.log("ecommerce api lisetning on port:",PORT);
+})
